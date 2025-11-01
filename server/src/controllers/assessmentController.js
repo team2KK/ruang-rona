@@ -34,8 +34,15 @@ exports.getQuestions = async (req, res) => {
  */
 exports.submitAssessment = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || req.body.userId;
     const { answers = [] } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User tidak ditemukan'
+      });
+    }
 
     if (!answers || !Array.isArray(answers) || answers.length === 0) {
       return res.status(400).json({
@@ -46,24 +53,48 @@ exports.submitAssessment = async (req, res) => {
 
     const session = await prisma.assessmentSession.create({
       data: {
-        userId: userId
+        userId: String(userId) 
       }
     });
 
+    const answerData = answers.map((a) => ({
+      sessionId: session.id,
+      questionId: a.questionId,
+      answer: a.answer
+    }));
+
+    await prisma.assessmentAnswer.createMany({
+      data: answerData
+    });
+
+    const counts = {}; // { akademik: 3, sosial: 1, ... }
+
     for (const a of answers) {
-      await prisma.assessmentAnswer.create({
-        data: {
-          sessionId: session.id,
-          questionId: a.questionId,
-          answer: a.answer
-        }
-      });
+      let val = a.answer;
+      if (Array.isArray(val)) {
+        val = val[0];
+      }
+      if (!val) continue;
+
+      const key = String(val).toLowerCase();
+
+      counts[key] = (counts[key] || 0) + 1;
     }
 
     let mainArea = null;
-    const first = answers.find(a => a.questionId === 1);
-    if (first) {
-      mainArea = Array.isArray(first.answer) ? first.answer[0] : first.answer;
+    if (Object.keys(counts).length > 0) {
+      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+      mainArea = sorted[0][0];
+    }
+
+    if (!mainArea) {
+      const first = answers.find((a) => a.questionId === 1);
+      if (first) {
+        mainArea = Array.isArray(first.answer) ? first.answer[0] : first.answer;
+        if (mainArea) {
+          mainArea = String(mainArea).toLowerCase();
+        }
+      }
     }
 
     if (mainArea) {

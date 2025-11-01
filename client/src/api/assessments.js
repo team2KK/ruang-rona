@@ -22,7 +22,7 @@ export async function submitAssessment(token, answers) {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ answers })
+    body: JSON.stringify({ userId: '9082072b-2eee-4423-86f1-cc403418a921', answers })
   });
 
   if (!res.ok) {

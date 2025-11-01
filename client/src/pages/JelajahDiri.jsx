@@ -109,11 +109,11 @@ const JelajahDiri = () => {
 
                     <div className="mb-5">
                         <p className="text-xs text-slate-500 mb-1">Area yang lagi berat:</p>
-                        <Tag value={area} rounded className="bg-indigo-100 text-indigo-700 px-3 py-2 capitalize text-sm" />
+                        <Tag value={area} rounded className="bg-primary-100 text-primary-700 px-3 py-2 capitalize text-sm" />
                     </div>
 
                     {rec ? (
-                        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-4 mb-5 border border-indigo-100">
+                        <div className="bg-gradient-to-r from-primary-50 to-purple-50 rounded-2xl p-4 mb-5 border border-primary-100">
                             <p className="text-xs text-slate-500 mb-1">Latihan yang cocok buat kamu:</p>
                             <h3 className="text-base font-semibold text-slate-900">{rec.title}</h3>
                             {rec.slug ? <p className="text-[11px] text-slate-400 mt-1">#{rec.slug}</p> : null}
@@ -179,7 +179,7 @@ const JelajahDiri = () => {
                     <div className="w-44">
                         <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
                             <div
-                                className="h-3 bg-gradient-to-r from-indigo-500 via-sky-400 to-emerald-400 rounded-full transition-all duration-300"
+                                className="h-3 bg-gradient-to-r from-primary-500 via-sky-400 to-emerald-400 rounded-full transition-all duration-300"
                                 style={{ width: `${percent}%` }}
                             />
                         </div>
@@ -205,7 +205,7 @@ const JelajahDiri = () => {
                                     'px-6 py-3 rounded-2xl transition shadow-sm',
                                     'min-w-[130px] text-left',
                                     active
-                                        ? 'bg-indigo-100/90 border border-indigo-200 text-indigo-900 shadow-md'
+                                        ? 'bg-primary-100/90 border border-primary-200 text-primary-900 shadow-md'
                                         : 'bg-white/60 border border-slate-100 text-slate-700 hover:bg-white',
                                 ].join(' ')}
                             >
@@ -236,7 +236,7 @@ const JelajahDiri = () => {
                     {!isLast ? (
                         <button
                             onClick={handleNext}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-indigo-500 text-white font-semibold shadow-md hover:bg-indigo-600 active:scale-[.99] transition"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary-500 text-white font-semibold shadow-md hover:bg-primary-600 active:scale-[.99] transition"
                         >
                             Lanjut
                             <span className="inline-block bg-white/30 rounded-full w-5 h-5 flex items-center justify-center text-xs">

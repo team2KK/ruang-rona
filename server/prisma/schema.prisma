@@ -164,12 +164,11 @@ model AssessmentQuestion {
 
 model AssessmentSession {
   id        Int               @id @default(autoincrement())
-  userId    Int               // dari auth
+  userId    String            @db.VarChar(191) // boleh pakai uuid/string bebas
   mainArea  String?
   createdAt DateTime          @default(now())
   answers   AssessmentAnswer[]
 }
-
 model AssessmentAnswer {
   id          Int               @id @default(autoincrement())
   sessionId   Int
