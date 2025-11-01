@@ -184,6 +184,25 @@ model ExerciseRecommendation {
   code      String   @unique   // "akademik","sosial","keluarga","diri"
   title     String
   slug      String
-  content   String?
+  content   String?    // daftar module id yang direkomendasikan
   createdAt DateTime @default(now())
+
+  modules   Module[]  // relation back to Module
+
+  @@map("exercise_recommendations")
 }
+
+model Module {
+  id                      Int      @id @default(autoincrement())
+  exerciseRecommendationId Int
+  title                   String
+  slug                    String   @unique
+  content                 String   @db.Text
+  createdAt               DateTime @default(now())
+
+  exerciseRecommendation  ExerciseRecommendation @relation(fields: [exerciseRecommendationId], references: [id], onDelete: Cascade)
+
+  @@index([exerciseRecommendationId])
+  @@map("modules")
+}
+

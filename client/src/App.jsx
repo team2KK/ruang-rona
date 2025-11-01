@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import JelajahDiri from './pages/JelajahDiri';
 import Exercises from './pages/Exercises';
 import DindingCerita from './pages/DindingCerita';
+import PusatBantuan from './pages/PusatBantuan';
 
 // Layout
 import Navbar from './components/layout/Navbar';
@@ -80,9 +81,9 @@ function App() {
                         <Route
                             path="/latihan"
                             element={
-                                <ProtectedRoute>
+                                // <ProtectedRoute>
                                     <Exercises />
-                                </ProtectedRoute>
+                                // </ProtectedRoute>
                             }
                         />
                         <Route
@@ -93,6 +94,10 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
+
+                        <Route path="pusat-bantuan" element={
+                            <PusatBantuan />
+                        } />
 
                         {/* 404 */}
                         <Route path="*" element={<Navigate to="/" />} />
