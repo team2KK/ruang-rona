@@ -33,7 +33,11 @@ const activityRoutes = require('./routes/activityRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const storyRoutes = require('./routes/storyRoutes');
 const replyRoutes = require('./routes/replyRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const adminAssessmentRoutes = require('./routes/adminAssessmentRoutes');
 
+app.use('/api/admin/assessments', adminAssessmentRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/activity', activityRoutes);

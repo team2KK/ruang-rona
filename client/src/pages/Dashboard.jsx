@@ -14,6 +14,8 @@ export default function Dashboard() {
     const navigate = useNavigate();
     const { user } = useAuthStore();
 
+    console.log(user)
+
     const [activities, setActivities] = useState([]);
     const [loadingActivity, setLoadingActivity] = useState(true);
 

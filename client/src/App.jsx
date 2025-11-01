@@ -14,6 +14,10 @@ import DindingCerita from './pages/DindingCerita';
 import PusatBantuan from './pages/PusatBantuan';
 import ExerciseDetail from './pages/ExerciseDetail';
 
+import AdminRoute from './components/routes/AdminRoute';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminAssessments from './pages/admin/AdminAssessments';
+
 // Layout
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -44,6 +48,23 @@ function App() {
                 <Navbar />
                 <main className="flex-grow">
                     <Routes>
+                        {/* Admin Routes */}
+                        <Route
+                            path="/admin"
+                            element={
+                                <AdminRoute>
+                                    <AdminDashboard />
+                                </AdminRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/assessments"
+                            element={
+                                <AdminRoute>
+                                    <AdminAssessments />
+                                </AdminRoute>
+                            }
+                        />
                         {/* Public Routes */}
                         <Route path="/" element={<Home />} />
                         <Route
@@ -92,7 +113,7 @@ function App() {
                             path="/latihan"
                             element={
                                 // <ProtectedRoute>
-                                    <Exercises />
+                                <Exercises />
                                 // </ProtectedRoute>
                             }
                         />

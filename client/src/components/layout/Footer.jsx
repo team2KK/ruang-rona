@@ -2,10 +2,16 @@
 import React from 'react';
 import { Divider } from 'primereact/divider';
 import { Brain, Heart, Shield } from 'lucide-react';
+import useAuthStore from '../../store/authStore';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
+    const { isAuthenticated, user, logout } = useAuthStore();
 
+    if (user?.role === 'admin') {
+        return null; 
+    }
+    
     return (
         <footer className="bg-white">
             <Divider />

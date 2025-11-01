@@ -62,6 +62,7 @@ exports.register = async (req, res) => {
             select: {
                 id: true,
                 username: true,
+                role: true,
                 createdAt: true
             }
         });
@@ -131,6 +132,7 @@ exports.login = async (req, res) => {
                 user: {
                     id: user.id,
                     username: user.username,
+                    role: user.role,
                     createdAt: user.createdAt
                 },
                 token

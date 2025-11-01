@@ -15,6 +15,7 @@ model User {
   id        String   @id @default(uuid())
   username  String   @unique
   password  String
+  role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -77,23 +78,23 @@ model QuestionChoice {
 
 // Model untuk Progress Latihan
 model ExerciseProgress {
-  id            String    @id @default(uuid())
-  userId        String
-  exerciseType  String // "breathing", "cognitive_restructuring", dll
-  exerciseTitle String
-  completed     Boolean   @default(false)
-  completedAt   DateTime?
-  notes         String?   @db.Text
-  streak        Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  exerciseRecommendationId Int? // FK ke ExerciseRecommendation.id
+  id              String   @id @default(uuid())
+  userId          String
+  exerciseType    String   // "breathing", "cognitive_restructuring", dll
+  exerciseTitle   String
+  completed       Boolean  @default(false)
+  completedAt     DateTime?
+  notes           String?  @db.Text
+  streak          Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  exerciseRecommendationId Int?   // FK ke ExerciseRecommendation.id
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   exerciseRecommendation ExerciseRecommendation? @relation(fields: [exerciseRecommendationId], references: [id])
-
+  
   @@index([userId])
   @@index([exerciseType])
   @@index([exerciseRecommendationId])
