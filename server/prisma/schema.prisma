@@ -1,0 +1,121 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Model untuk User Anonim
+model User {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  password     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relasi
+  assessments  Assessment[]
+  exercises    ExerciseProgress[]
+  stories      Story[]
+  storySupports StorySupport[]
+  
+  @@map("users")
+}
+
+// Model untuk Assessment/Jelajah Diri
+model Assessment {
+  id              String   @id @default(uuid())
+  userId          String
+  stressAreas     Json     // {academic: 8, social: 5, family: 3, personal: 7, online: 6}
+  primaryConcern  String   // "academic", "social", dll
+  responses       Json     // Semua jawaban kuesioner
+  createdAt       DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@map("assessments")
+}
+
+// Model untuk Progress Latihan
+model ExerciseProgress {
+  id              String   @id @default(uuid())
+  userId          String
+  exerciseType    String   // "breathing", "cognitive_restructuring", dll
+  exerciseTitle   String
+  completed       Boolean  @default(false)
+  completedAt     DateTime?
+  notes           String?  @db.Text
+  streak          Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([exerciseType])
+  @@map("exercise_progress")
+}
+
+// Model untuk Dinding Cerita (Forum)
+model Story {
+  id          String   @id @default(uuid())
+  userId      String
+  category    String   // "school", "friends", "family", "self", "online"
+  title       String
+  content     String   @db.Text
+  isAnonymous Boolean  @default(true)
+  isModerated Boolean  @default(false)
+  isApproved  Boolean  @default(false)
+  flaggedKeywords Json? // Array kata kunci yang terdeteksi
+  supportCount Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  supports StorySupport[]
+  
+  @@index([userId])
+  @@index([category])
+  @@index([isApproved])
+  @@map("stories")
+}
+
+// Model untuk Dukungan pada Cerita
+model StorySupport {
+  id        String   @id @default(uuid())
+  storyId   String
+  userId    String
+  createdAt DateTime @default(now())
+  
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([storyId, userId]) // Satu user hanya bisa support satu story sekali
+  @@index([storyId])
+  @@index([userId])
+  @@map("story_supports")
+}
+
+// Model untuk Emergency Contact/Resources
+model EmergencyResource {
+  id          String   @id @default(uuid())
+  name        String
+  type        String   // "hotline", "clinic", "psychologist"
+  phone       String?
+  website     String?
+  description String   @db.Text
+  availability String? // "24/7", "Senin-Jumat 08:00-17:00"
+  isVerified  Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([type])
+  @@map("emergency_resources")
+}
