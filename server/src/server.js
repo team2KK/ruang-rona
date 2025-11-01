@@ -33,9 +33,9 @@ const exerciseRoutes = require('./routes/exerciseRoutes');
 const storyRoutes = require('./routes/storyRoutes');
 
 app.use('/api/auth', authRoutes);
-app.use('/api/assessments', assessmentRoutes);
-app.use('/api/exercises', exerciseRoutes);
-app.use('/api/stories', storyRoutes);
+// app.use('/api/assessments', assessmentRoutes);
+// app.use('/api/exercises', exerciseRoutes);
+// app.use('/api/stories', storyRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,10 +1,19 @@
+import React from 'react';
+import { Card } from 'primereact/card';
+import { Button } from 'primereact/button';
+import { Brain } from 'lucide-react';
+
 export default function JelajahDiri() {
     return (
-        <div className="p-6 bg-calm-bg min-h-screen">
-            <h1 className="text-3xl font-bold text-calm-text mb-4">Jelajah Diri</h1>
-            <p className="text-calm-muted">Temukan lebih banyak tentang diri Anda melalui berbagai aktivitas dan
-                refleksi.</p>
-            {/* Konten Jelajah Diri akan ditambahkan di sini */}
+        <div className="container-custom py-6 fade-in">
+            <Card className="text-center border-round-2xl">
+                <Brain size={100} className="text-primary-500 mx-auto mb-4" />
+                <h2 className="text-3xl font-bold text-gray-800 mb-3">Jelajah Diri</h2>
+                <p className="text-gray-600 mb-4">
+                    Fitur ini sedang dalam pengembangan dan akan segera hadir!
+                </p>
+                <Button label="Kembali ke Dashboard" icon="pi pi-arrow-left" onClick={() => window.history.back()} />
+            </Card>
         </div>
-    )
+    );
 }
