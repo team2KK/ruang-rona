@@ -1,14 +1,13 @@
 /* src/index.css */
-@tailwind base;
-
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
 
 /* PrimeReact Styles */
 @import 'primereact/resources/themes/lara-light-blue/theme.css';
-@import 'primereact/resources/primereact.min.css';
-@import 'primeicons/primeicons.css';
-@import 'primeflex/primeflex.css';
+/*@import 'primereact/resources/primereact.min.css';*/
+/*@import 'primeicons/primeicons.css';*/
+/*@import 'primeflex/primeflex.css';*/
 
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -17,5 +16,9 @@ html, body, #root {
 }
 
 .p-icon-field {
+    width: 100%;
+}
+
+.p-password {
     width: 100%;
 }

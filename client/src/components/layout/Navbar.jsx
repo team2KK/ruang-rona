@@ -48,8 +48,8 @@ export default function Navbar() {
 
     // Logo/Brand
     const start = (
-        <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex align-items-center gap-2 text-decoration-none">
-            <div className="bg-primary-500 p-2 border-round-lg">
+        <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-1 no-underline">
+            <div className="p-2 border-round-lg">
                 <Brain size={28} color="#0369a1" strokeWidth={2} />
             </div>
             <span className="text-2xl font-bold text-primary-700">Ruang Rona</span>
@@ -104,7 +104,7 @@ export default function Navbar() {
                 model={isAuthenticated ? authenticatedItems : []}
                 start={start}
                 end={end}
-                className="border-none shadow-2 border-round-lg mx-3 my-3"
+                className="border-none shadow-2 border-round-lg mx-3 my-3 px-3 py-1"
                 style={{ background: 'white' }}
             />
         </div>

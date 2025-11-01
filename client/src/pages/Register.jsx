@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
-import { Button } from 'primereact/button';
-import { Message } from 'primereact/message';
-import { Divider } from 'primereact/divider';
-import { Checkbox } from 'primereact/checkbox';
+import React, {useState, useEffect} from 'react';
+import {useNavigate, Link} from 'react-router-dom';
+import {InputText} from 'primereact/inputtext';
+import {Password} from 'primereact/password';
+import {Button} from 'primereact/button';
+import {Message} from 'primereact/message';
+import {Divider} from 'primereact/divider';
+import {Checkbox} from 'primereact/checkbox';
 import useAuthStore from '../store/authStore';
-import { Heart, Brain, Sparkles, UserPlus, ShieldCheck, Lock } from 'lucide-react';
+import {Heart, Brain, Sparkles, UserPlus, ShieldCheck, Lock} from 'lucide-react';
 
 export default function Register() {
     const navigate = useNavigate();
-    const { register, isLoading, error, clearError } = useAuthStore();
+    const {register, isLoading, error, clearError} = useAuthStore();
 
     const [formData, setFormData] = useState({
         username: '',
@@ -75,7 +75,7 @@ export default function Register() {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -93,7 +93,7 @@ export default function Register() {
     const passwordHeader = <div className="font-bold mb-3 text-sm">Pilih Password yang Kuat</div>;
     const passwordFooter = (
         <>
-            <Divider />
+            <Divider/>
             <p className="mt-2 text-xs font-semibold">Saran:</p>
             <ul className="pl-2 ml-2 mt-1 text-xs space-y-1">
                 <li>• Minimal 6 karakter</li>
@@ -104,27 +104,29 @@ export default function Register() {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-pastel-mint/20 to-pastel-peach/30 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div
+            className="min-h-screen bg-gradient-to-br from-green-50 via-pastel-mint/20 to-pastel-peach/30 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
                 <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Illustration Side */}
-                    <div className="hidden lg:block bg-gradient-to-br from-green-600 via-green-500 to-teal-600 text-white p-8 lg:p-12 relative overflow-hidden">
+                    <div
+                        className="hidden lg:block bg-gradient-to-br from-green-600 via-green-500 to-teal-600 text-white p-8 lg:p-12 relative overflow-hidden">
                         <div className="relative z-10 h-full flex flex-col justify-center">
                             {/* Floating Icons */}
                             <div className="absolute top-[15%] left-[15%] animate-bounce">
-                                <Sparkles size={40} className="opacity-70" />
+                                <Sparkles size={40} className="opacity-70"/>
                             </div>
                             <div className="absolute top-[55%] right-[10%] animate-pulse delay-1500">
-                                <Heart size={35} className="opacity-70" />
+                                <Heart size={35} className="opacity-70"/>
                             </div>
                             <div className="absolute bottom-[25%] left-[25%] animate-bounce delay-2500">
-                                <ShieldCheck size={38} className="opacity-70" />
+                                <ShieldCheck size={38} className="opacity-70"/>
                             </div>
 
                             {/* Main Content */}
                             <div className="text-center space-y-6">
                                 <div className="inline-block p-4 bg-white/10 rounded-full backdrop-blur-sm">
-                                    <UserPlus size={60} strokeWidth={1.5} />
+                                    <UserPlus size={60} strokeWidth={1.5}/>
                                 </div>
 
                                 <div>
@@ -134,20 +136,23 @@ export default function Register() {
                                     </p>
                                 </div>
 
-                                <div className="w-24 h-1 bg-white/30 mx-auto rounded-full" />
+                                <div className="w-24 h-1 bg-white/30 mx-auto rounded-full"/>
 
                                 {/* Features */}
                                 <div className="mt-8 space-y-4 text-left max-w-sm mx-auto">
-                                    <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <Lock size={24} className="flex-shrink-0" />
+                                    <div
+                                        className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                                        <Lock size={24} className="flex-shrink-0"/>
                                         <span className="text-sm lg:text-base">Registrasi Anonim & Cepat</span>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <Brain size={24} className="flex-shrink-0" />
+                                    <div
+                                        className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                                        <Brain size={24} className="flex-shrink-0"/>
                                         <span className="text-sm lg:text-base">Akses Tools Kesehatan Mental</span>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <Heart size={24} className="flex-shrink-0" />
+                                    <div
+                                        className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                                        <Heart size={24} className="flex-shrink-0"/>
                                         <span className="text-sm lg:text-base">Komunitas yang Mendukung</span>
                                     </div>
                                 </div>
@@ -156,8 +161,8 @@ export default function Register() {
 
                         {/* Background Pattern */}
                         <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />
-                            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+                            <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl"/>
+                            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"/>
                         </div>
                     </div>
 
@@ -167,7 +172,7 @@ export default function Register() {
                             {/* Mobile Logo */}
                             <div className="lg:hidden text-center mb-6">
                                 <div className="inline-block p-3 bg-green-100 rounded-full mb-3">
-                                    <UserPlus size={40} className="text-green-600" />
+                                    <UserPlus size={40} className="text-green-600"/>
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-800">Ruang Rona</h2>
                             </div>
@@ -199,7 +204,7 @@ export default function Register() {
                                         Username <span className="text-red-500">*</span>
                                     </label>
                                     <span className="flex gap-2 w-full">
-                                        <i className="pi pi-user" />
+                                        <i className="pi pi-user"/>
                                         <InputText
                                             id="username"
                                             name="username"
@@ -243,7 +248,8 @@ export default function Register() {
 
                                 {/* Confirm Password Field */}
                                 <div>
-                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="confirmPassword"
+                                           className="block text-sm font-medium text-gray-700 mb-2">
                                         Konfirmasi Password <span className="text-red-500">*</span>
                                     </label>
                                     <Password
@@ -259,7 +265,8 @@ export default function Register() {
                                         disabled={isLoading}
                                     />
                                     {errors.confirmPassword && (
-                                        <small className="text-red-500 text-xs mt-1 block">{errors.confirmPassword}</small>
+                                        <small
+                                            className="text-red-500 text-xs mt-1 block">{errors.confirmPassword}</small>
                                     )}
                                 </div>
 
@@ -272,7 +279,7 @@ export default function Register() {
                                             onChange={(e) => {
                                                 setAgreedToTerms(e.checked);
                                                 if (errors.terms) {
-                                                    setErrors(prev => ({ ...prev, terms: '' }));
+                                                    setErrors(prev => ({...prev, terms: ''}));
                                                 }
                                             }}
                                             className={`mt-0.5 ${errors.terms ? 'p-invalid' : ''}`}
@@ -295,13 +302,15 @@ export default function Register() {
                                 </div>
 
                                 {/* Submit Button */}
-                                <Button
-                                    type="submit"
-                                    label={isLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
-                                    icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-user-plus'}
-                                    className="w-full p-button-lg p-button-success mt-4"
-                                    disabled={isLoading}
-                                />
+                                <div className="text-center">
+                                    <Button
+                                        type="submit"
+                                        label={isLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
+                                        icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-user-plus'}
+                                        className="w-full p-button-lg p-button-success bg-green-600 text-white px-3 py-1 rounded-md mt-4"
+                                        disabled={isLoading}
+                                    />
+                                </div>
                             </form>
 
                             {/* Divider */}

@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
-import { Button } from 'primereact/button';
-import { Message } from 'primereact/message';
-import { Divider } from 'primereact/divider';
+import React, {useState, useEffect} from 'react';
+import {useNavigate, Link} from 'react-router-dom';
+import {InputText} from 'primereact/inputtext';
+import {Password} from 'primereact/password';
+import {Button} from 'primereact/button';
+import {Message} from 'primereact/message';
+import {Divider} from 'primereact/divider';
 import useAuthStore from '../store/authStore';
-import { Heart, Brain, Sparkles, ShieldCheck } from 'lucide-react';
+import {Heart, Brain, Sparkles, ShieldCheck} from 'lucide-react';
 
 export default function Login() {
     const navigate = useNavigate();
-    const { login, isLoading, error, clearError } = useAuthStore();
+    const {login, isLoading, error, clearError} = useAuthStore();
 
     const [formData, setFormData] = useState({
         username: '',
@@ -51,7 +51,7 @@ export default function Login() {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -67,27 +67,29 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-pastel-blue/20 to-pastel-lavender/30 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div
+            className="min-h-screen bg-gradient-to-br from-primary-50 via-pastel-blue/20 to-pastel-lavender/30 flex items-center justify-center p-4 sm:p-6 lg:p-8">
             <div className="w-full max-w-6xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
                 <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Illustration Side */}
-                    <div className="hidden lg:block bg-gradient-to-br from-primary-600 via-primary-500 to-primary-700 text-white p-8 lg:p-12 relative overflow-hidden">
+                    <div
+                        className="hidden lg:block bg-gradient-to-br from-primary-600 via-primary-500 to-primary-700 text-white p-8 lg:p-12 relative overflow-hidden">
                         <div className="relative z-10 h-full flex flex-col justify-center">
                             {/* Floating Icons */}
                             <div className="absolute top-[10%] left-[10%] animate-bounce">
-                                <Heart size={40} className="opacity-70" />
+                                <Heart size={40} className="opacity-70"/>
                             </div>
                             <div className="absolute top-[60%] right-[15%] animate-pulse delay-1000">
-                                <Sparkles size={35} className="opacity-70" />
+                                <Sparkles size={35} className="opacity-70"/>
                             </div>
                             <div className="absolute bottom-[20%] left-[20%] animate-bounce delay-2000">
-                                <Brain size={38} className="opacity-70" />
+                                <Brain size={38} className="opacity-70"/>
                             </div>
 
                             {/* Main Content */}
                             <div className="text-center space-y-6">
                                 <div className="inline-block p-4 bg-white/10 rounded-full backdrop-blur-sm">
-                                    <Brain size={60} strokeWidth={1.5} />
+                                    <Brain size={60} strokeWidth={1.5}/>
                                 </div>
 
                                 <div>
@@ -97,20 +99,23 @@ export default function Login() {
                                     </p>
                                 </div>
 
-                                <div className="w-24 h-1 bg-white/30 mx-auto rounded-full" />
+                                <div className="w-24 h-1 bg-white/30 mx-auto rounded-full"/>
 
                                 {/* Features */}
                                 <div className="mt-8 space-y-4 text-left max-w-sm mx-auto">
-                                    <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <ShieldCheck size={24} className="flex-shrink-0" />
+                                    <div
+                                        className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                                        <ShieldCheck size={24} className="flex-shrink-0"/>
                                         <span className="text-sm lg:text-base">100% Anonim & Privat</span>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <Heart size={24} className="flex-shrink-0" />
+                                    <div
+                                        className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                                        <Heart size={24} className="flex-shrink-0"/>
                                         <span className="text-sm lg:text-base">Dukungan Emosional 24/7</span>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                                        <Sparkles size={24} className="flex-shrink-0" />
+                                    <div
+                                        className="flex items-center gap-3 p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+                                        <Sparkles size={24} className="flex-shrink-0"/>
                                         <span className="text-sm lg:text-base">Latihan & Tools Interaktif</span>
                                     </div>
                                 </div>
@@ -119,8 +124,8 @@ export default function Login() {
 
                         {/* Background Pattern */}
                         <div className="absolute inset-0 opacity-10">
-                            <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl" />
-                            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+                            <div className="absolute top-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl"/>
+                            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"/>
                         </div>
                     </div>
 
@@ -130,7 +135,7 @@ export default function Login() {
                             {/* Mobile Logo */}
                             <div className="lg:hidden text-center mb-6">
                                 <div className="inline-block p-3 bg-primary-100 rounded-full mb-3">
-                                    <Brain size={40} className="text-primary-600" />
+                                    <Brain size={40} className="text-primary-600"/>
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-800">Ruang Rona</h2>
                             </div>
@@ -162,7 +167,7 @@ export default function Login() {
                                         Username
                                     </label>
                                     <span className="flex items-center gap-2 w-full">
-                                        <i className="pi pi-user" />
+                                        <i className="pi pi-user"/>
                                         <InputText
                                             id="username"
                                             name="username"
@@ -179,7 +184,7 @@ export default function Login() {
                                 </div>
 
                                 {/* Password Field */}
-                                <div class="w-full">
+                                <div>
                                     <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                                         Password
                                     </label>
@@ -189,11 +194,11 @@ export default function Login() {
                                         value={formData.password}
                                         onChange={handleChange}
                                         placeholder="Masukkan password kamu"
-                                        toggleMask
                                         feedback={false}
                                         className={`w-full ${errors.password ? 'p-invalid' : ''}`}
                                         inputClassName="w-full"
                                         disabled={isLoading}
+                                        toggleMask={true}
                                     />
                                     {errors.password && (
                                         <small className="text-red-500 text-xs mt-1 block">{errors.password}</small>
@@ -201,14 +206,14 @@ export default function Login() {
                                 </div>
 
                                 {/* Submit Button */}
-                                <div className="text-center bg-primary-500">
-                                <Button
-                                    type="submit"
-                                    label={isLoading ? 'Memproses...' : 'Masuk'}
-                                    icon={isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'}
-                                    className="p-button-lg p-button-primary mt-6"
-                                    disabled={isLoading}
-                                />
+                                <div className="text-center">
+                                    <Button
+                                        type="submit"
+                                        label={isLoading ? 'Memproses...' : 'Masuk'}
+                                        icon={`pr-3 ${isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'}`}
+                                        className="w-full p-button-lg p-button-primary bg-primary-500 px-3 py-1 text-white rounded-md mt-6"
+                                        disabled={isLoading}
+                                    />
                                 </div>
                             </form>
 
