@@ -37,7 +37,7 @@ const replyRoutes = require('./routes/replyRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
 app.use('/api/activity', activityRoutes);
-// app.use('/api/exercises', exerciseRoutes);
+app.use('/api/exercises', exerciseRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/replies', replyRoutes);
 
