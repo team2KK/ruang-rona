@@ -60,11 +60,6 @@ export default function Dashboard() {
                             <div className="font-bold text-orange-600">{userStreak} Hari</div>
                             <div className="text-xs text-gray-600">Streak</div>
                         </div>
-                        <div className="text-center p-3 bg-purple-50 rounded-lg">
-                            <Award size={24} className="text-purple-500 mb-1" />
-                            <div className="font-bold text-purple-600">Level 3</div>
-                            <div className="text-xs text-gray-600">Pemula</div>
-                        </div>
                     </div>
                 </div>
             </div>

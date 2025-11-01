@@ -31,11 +31,13 @@ const authRoutes = require('./routes/authRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const storyRoutes = require('./routes/storyRoutes');
+const replyRoutes = require('./routes/replyRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
 // app.use('/api/exercises', exerciseRoutes);
-// app.use('/api/stories', storyRoutes);
+app.use('/api/stories', storyRoutes);
+app.use('/api/replies', replyRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

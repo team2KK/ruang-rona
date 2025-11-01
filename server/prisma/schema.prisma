@@ -12,32 +12,35 @@ datasource db {
 
 // Model untuk User Anonim
 model User {
-  id           String   @id @default(uuid())
-  username     String   @unique
-  password     String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relasi
-  assessments  Assessment[]
-  exercises    ExerciseProgress[]
-  stories      Story[]
+  assessments   Assessment[]
+  exercises     ExerciseProgress[]
+  stories       Story[]
   storySupports StorySupport[]
-  
+  replies       StoryReply[]
+  replyVotes    ReplyVote[]
+  storyLogs     StoryLog[]
+
   @@map("users")
 }
 
 // Model untuk Assessment/Jelajah Diri
 model Assessment {
-  id              String   @id @default(uuid())
-  userId          String
-  stressAreas     Json     // {academic: 8, social: 5, family: 3, personal: 7, online: 6}
-  primaryConcern  String   // "academic", "social", dll
-  responses       Json     // Semua jawaban kuesioner
-  createdAt       DateTime @default(now())
-  
+  id             String   @id @default(uuid())
+  userId         String
+  stressAreas    Json // {academic: 8, social: 5, family: 3, personal: 7, online: 6}
+  primaryConcern String // "academic", "social", dll
+  responses      Json // Semua jawaban kuesioner
+  createdAt      DateTime @default(now())
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId])
   @@map("assessments")
 }
@@ -46,47 +49,47 @@ model Assessment {
 model Question {
   id        String   @id @default(uuid())
   text      String   @db.Text
-  category  String   // "academic", "social", "family", "personal", "online"
+  category  String // "academic", "social", "family", "personal", "online"
   order     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  choices   QuestionChoice[]
-  
+
+  choices QuestionChoice[]
+
   @@unique([category, order])
   @@map("questions")
 }
 
 // Model untuk Pilihan Jawaban Kuesioner
 model QuestionChoice {
-  id          String   @id @default(uuid())
-  questionId  String
-  text        String
-  value       Int      // Nilai/skor untuk jawaban ini
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  
+  id         String   @id @default(uuid())
+  questionId String
+  text       String
+  value      Int // Nilai/skor untuk jawaban ini
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
   @@index([questionId])
   @@map("question_choices")
 }
 
 // Model untuk Progress Latihan
 model ExerciseProgress {
-  id              String   @id @default(uuid())
-  userId          String
-  exerciseType    String   // "breathing", "cognitive_restructuring", dll
-  exerciseTitle   String
-  completed       Boolean  @default(false)
-  completedAt     DateTime?
-  notes           String?  @db.Text
-  streak          Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
+  id            String    @id @default(uuid())
+  userId        String
+  exerciseType  String // "breathing", "cognitive_restructuring", dll
+  exerciseTitle String
+  completed     Boolean   @default(false)
+  completedAt   DateTime?
+  notes         String?   @db.Text
+  streak        Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId])
   @@index([exerciseType])
   @@map("exercise_progress")
@@ -94,22 +97,23 @@ model ExerciseProgress {
 
 // Model untuk Dinding Cerita (Forum)
 model Story {
-  id          String   @id @default(uuid())
-  userId      String
-  category    String   // "school", "friends", "family", "self", "online"
-  title       String
-  content     String   @db.Text
-  isAnonymous Boolean  @default(true)
-  isModerated Boolean  @default(false)
-  isApproved  Boolean  @default(false)
+  id              String   @id @default(uuid())
+  userId          String
+  category        String // "school", "friends", "family", "self", "online"
+  title           String
+  content         String   @db.Text
+  isAnonymous     Boolean  @default(true)
+  isModerated     Boolean  @default(false)
+  isApproved      Boolean  @default(false)
   flaggedKeywords Json? // Array kata kunci yang terdeteksi
-  supportCount Int     @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  supportCount    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   supports StorySupport[]
-  
+  replies  StoryReply[]
+
   @@index([userId])
   @@index([category])
   @@index([isApproved])
@@ -122,30 +126,68 @@ model StorySupport {
   storyId   String
   userId    String
   createdAt DateTime @default(now())
-  
+
   story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@unique([storyId, userId]) // Satu user hanya bisa support satu story sekali
   @@index([storyId])
   @@index([userId])
   @@map("story_supports")
 }
 
+// Model untuk Reply/Komentar pada Cerita
+model StoryReply {
+  id            String   @id @default(uuid())
+  storyId       String
+  userId        String
+  content       String   @db.Text
+  isAnonymous   Boolean  @default(true)
+  upvoteCount   Int      @default(0)
+  downvoteCount Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  story Story       @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes ReplyVote[]
+
+  @@index([storyId])
+  @@index([userId])
+  @@map("story_replies")
+}
+
+// Model untuk Vote pada Reply
+model ReplyVote {
+  id        String   @id @default(uuid())
+  replyId   String
+  userId    String
+  voteType  String // "upvote" atau "downvote"
+  createdAt DateTime @default(now())
+
+  reply StoryReply @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([replyId, userId])
+  @@index([replyId])
+  @@index([userId])
+  @@map("reply_votes")
+}
+
 // Model untuk Emergency Contact/Resources
 model EmergencyResource {
-  id          String   @id @default(uuid())
-  name        String
-  type        String   // "hotline", "clinic", "psychologist"
-  phone       String?
-  website     String?
-  description String   @db.Text
+  id           String   @id @default(uuid())
+  name         String
+  type         String // "hotline", "clinic", "psychologist"
+  phone        String?
+  website      String?
+  description  String   @db.Text
   availability String? // "24/7", "Senin-Jumat 08:00-17:00"
-  isVerified  Boolean  @default(true)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  isVerified   Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
   @@index([type])
   @@map("emergency_resources")
 }
@@ -154,36 +196,55 @@ model AssessmentQuestion {
   id        Int      @id @default(autoincrement())
   order     Int
   question  String
-  type      String   // "single", "scale", "multi"
-  options   Json?    // ["akademik","sosial","keluarga","diri","lainnya"]
+  type      String // "single", "scale", "multi"
+  options   Json? // ["akademik","sosial","keluarga","diri","lainnya"]
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  answers   AssessmentAnswer[]
+  answers AssessmentAnswer[]
 }
 
 model AssessmentSession {
-  id        Int               @id @default(autoincrement())
-  userId    String            @db.VarChar(191) // boleh pakai uuid/string bebas
+  id        Int                @id @default(autoincrement())
+  userId    String             @db.VarChar(191) // boleh pakai uuid/string bebas
   mainArea  String?
-  createdAt DateTime          @default(now())
+  createdAt DateTime           @default(now())
   answers   AssessmentAnswer[]
 }
+
 model AssessmentAnswer {
-  id          Int               @id @default(autoincrement())
-  sessionId   Int
-  questionId  Int
-  answer      Json
-  createdAt   DateTime          @default(now())
-  session     AssessmentSession @relation(fields: [sessionId], references: [id])
-  question    AssessmentQuestion @relation(fields: [questionId], references: [id])
+  id         Int                @id @default(autoincrement())
+  sessionId  Int
+  questionId Int
+  answer     Json
+  createdAt  DateTime           @default(now())
+  session    AssessmentSession  @relation(fields: [sessionId], references: [id])
+  question   AssessmentQuestion @relation(fields: [questionId], references: [id])
 }
 
 model ExerciseRecommendation {
   id        Int      @id @default(autoincrement())
-  code      String   @unique   // "akademik","sosial","keluarga","diri"
+  code      String   @unique // "akademik","sosial","keluarga","diri"
   title     String
   slug      String
   content   String?
   createdAt DateTime @default(now())
+}
+
+// Model untuk Story Activity Logs
+model StoryLog {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   @default("story") // always "story"
+  title     String   @default("Dinding Cerita")
+  subtitle  String // "Memberikan dukungan", "Membuat cerita", "Membalas cerita"
+  storyId   String? // optional reference to the story
+  replyId   String? // optional reference to the reply
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("story_logs")
 }
