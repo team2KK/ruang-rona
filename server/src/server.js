@@ -29,12 +29,14 @@ app.get('/api/health', (req, res) => {
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
+const activityRoutes = require('./routes/activityRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const storyRoutes = require('./routes/storyRoutes');
 const replyRoutes = require('./routes/replyRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
+app.use('/api/activity', activityRoutes);
 // app.use('/api/exercises', exerciseRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/replies', replyRoutes);
