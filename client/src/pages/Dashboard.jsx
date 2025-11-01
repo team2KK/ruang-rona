@@ -1,5 +1,5 @@
 // `client/src/pages/Dashboard.jsx`
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
@@ -7,10 +7,15 @@ import { ProgressBar } from 'primereact/progressbar';
 import { Badge } from 'primereact/badge';
 import useAuthStore from '../store/authStore';
 import { Brain, Heart, MessageCircle, TrendingUp, Award, Calendar } from 'lucide-react';
+import { getRecentActivities } from '../api/activity';
+import { getOverallExerciseProgress } from '../api/exercise';
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const { user } = useAuthStore();
+
+    const [activities, setActivities] = useState([]);
+    const [loadingActivity, setLoadingActivity] = useState(true);
 
     const quickActions = [
         {
@@ -43,6 +48,57 @@ export default function Dashboard() {
     const totalExercises = 20;
     const progressPercentage = (completedExercises / totalExercises) * 100;
 
+    const timeAgo = (iso) => {
+        if (!iso) return '-';
+        const diff = Date.now() - new Date(iso).getTime();
+        const m = Math.floor(diff / 60000);
+        if (m < 1) return 'baru saja';
+        if (m < 60) return `${m} menit yang lalu`;
+        const h = Math.floor(m / 60);
+        if (h < 24) return `${h} jam yang lalu`;
+        const d = Math.floor(h / 24);
+        if (d === 1) return 'Kemarin';
+        return `${d} hari yang lalu`;
+    };
+
+    useEffect(() => {
+        const load = async () => {
+            const data = await getRecentActivities();
+            setActivities(data);
+            setLoadingActivity(false);
+        };
+        load();
+    }, []);
+
+    const activityStyle = {
+        exercise: {
+            bg: 'bg-blue-50',
+            icon: <i className="pi pi-check-circle text-blue-400" style={{ fontSize: '1.5rem' }} />
+        },
+        story: {
+            bg: 'bg-green-50',
+            icon: <i className="pi pi-heart text-green-400" style={{ fontSize: '1.5rem' }} />
+        },
+        assessment: {
+            bg: 'bg-purple-50',
+            icon: <i className="pi pi-compass text-purple-400" style={{ fontSize: '1.5rem' }} />
+        }
+    };
+
+    const [overallProgress, setOverallProgress] = React.useState({
+        total: 0,
+        completed: 0,
+        percent: 0,
+    });
+
+    React.useEffect(() => {
+        const load = async () => {
+            const data = await getOverallExerciseProgress();
+            setOverallProgress(data);
+        };
+        load();
+    }, []);
+
     return (
         <div className="max-w-6xl mx-auto px-6 py-6">
             {/* Welcome Header */}
@@ -60,11 +116,6 @@ export default function Dashboard() {
                             <div className="font-bold text-orange-600">{userStreak} Hari</div>
                             <div className="text-xs text-gray-600">Streak</div>
                         </div>
-                        <div className="text-center p-3 bg-purple-50 rounded-lg">
-                            <Award size={24} className="text-purple-500 mb-1" />
-                            <div className="font-bold text-purple-600">Level 3</div>
-                            <div className="text-xs text-gray-600">Pemula</div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -81,6 +132,34 @@ export default function Dashboard() {
                 <ProgressBar value={progressPercentage} className="mb-3" />
                 <p className="text-gray-600 m-0">
                     Kamu sudah menyelesaikan {completedExercises} dari {totalExercises} latihan minggu ini. Pertahankan! 🎉
+                </p>
+            </Card>
+
+            <Card className="mb-5 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                        <TrendingUp size={24} className="text-blue-600" />
+                        <h3 className="text-xl font-semibold text-gray-800 m-0">Progress Latihan</h3>
+                    </div>
+                    <span className="px-4 py-1 rounded-full bg-sky-500 text-white text-sm font-semibold">
+                        {overallProgress.completed}/{overallProgress.total}
+                    </span>
+                </div>
+
+                {/* bar */}
+                <div className="w-full bg-slate-200 rounded-full h-5 overflow-hidden mb-3">
+                    <div
+                        className="h-5 bg-sky-500 text-center text-white text-xs font-semibold flex items-center justify-center transition-all duration-500"
+                        style={{ width: `${overallProgress.percent}%` }}
+                    >
+                        {overallProgress.percent}%
+                    </div>
+                </div>
+
+                <p className="text-gray-600 m-0">
+                    {overallProgress.total === 0
+                        ? 'Belum ada latihan yang tercatat. Coba mulai satu latihan hari ini ✨'
+                        : `Kamu sudah menyelesaikan ${overallProgress.completed} dari ${overallProgress.total} latihan yang pernah kamu jalani. Mantap! 🎉`}
                 </p>
             </Card>
 
@@ -113,29 +192,32 @@ export default function Dashboard() {
             {/* Recent Activity */}
             <Card className="rounded-2xl p-6">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4">Aktivitas Terakhir</h3>
-                <div className="flex flex-col gap-3">
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                        <i className="pi pi-check-circle text-primary-500" style={{ fontSize: '1.5rem' }}></i>
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-800 m-0">Latihan Pernapasan</p>
-                            <p className="text-sm text-gray-600 m-0">Selesai - 2 jam yang lalu</p>
-                        </div>
+
+                {loadingActivity ? (
+                    <p className="text-gray-400 text-sm">Memuat aktivitas...</p>
+                ) : !activities.length ? (
+                    <div className="text-gray-400 text-sm">Belum ada aktivitas. Coba mulai dari “Jelajah Diri” 🙂</div>
+                ) : (
+                    <div className="flex flex-col gap-3">
+                        {activities.map((act, idx) => {
+                            const style = activityStyle[act.type] || {
+                                bg: 'bg-slate-50',
+                                icon: <i className="pi pi-clock text-slate-400" style={{ fontSize: '1.5rem' }} />
+                            };
+                            return (
+                                <div key={idx} className={`flex items-center gap-3 p-3 rounded-lg ${style.bg}`}>
+                                    {style.icon}
+                                    <div className="flex-1">
+                                        <p className="font-medium text-gray-800 m-0">{act.title}</p>
+                                        <p className="text-sm text-gray-600 m-0">
+                                            {act.subtitle} · {timeAgo(act.createdAt)}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                        <i className="pi pi-heart text-green-500" style={{ fontSize: '1.5rem' }}></i>
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-800 m-0">Dinding Cerita</p>
-                            <p className="text-sm text-gray-600 m-0">Memberikan dukungan - Kemarin</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                        <i className="pi pi-compass text-purple-500" style={{ fontSize: '1.5rem' }}></i>
-                        <div className="flex-1">
-                            <p className="font-medium text-gray-800 m-0">Assessment Jelajah Diri</p>
-                            <p className="text-sm text-gray-600 m-0">Selesai - 3 hari yang lalu</p>
-                        </div>
-                    </div>
-                </div>
+                )}
             </Card>
         </div>
     );

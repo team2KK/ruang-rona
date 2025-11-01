@@ -1,13 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const storyController = require('../controllers/storyController');
+const authMiddleware = require('../middleware/auth');
 
-// Nanti, Anda akan membuat controller untuk story
-// const storyController = require('../controllers/storyController');
+// Public routes
+router.get('/', storyController.getAllStories);
+router.get('/:id', storyController.getStory);
 
-// Contoh rute placeholder
-router.get('/', auth, (req, res) => {
-    res.json({ success: true, message: 'Endpoint untuk stories.' });
-});
+// Protected routes - require authentication
+router.post('/', authMiddleware, storyController.createStory);
+router.post('/:id/support', authMiddleware, storyController.toggleSupport);
+router.get('/my/stories', authMiddleware, storyController.getMyStories);
+router.delete('/:id', authMiddleware, storyController.deleteStory);
 
 module.exports = router;

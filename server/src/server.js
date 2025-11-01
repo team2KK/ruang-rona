@@ -9,30 +9,10 @@ const prisma = new PrismaClient();
 const app = express();
 
 // Middleware
-// Enable tighter CORS in production, permissive for local development
-if (process.env.NODE_ENV === 'development') {
-  const devOrigins = [
-    process.env.CLIENT_ORIGIN || 'http://localhost:5173', // vite default
-    'http://localhost:3000', // CRA / other dev servers
-  ];
-
-  app.use(cors({
-    origin: (origin, callback) => {
-      // allow non-browser requests (e.g. Postman) with no origin
-      if (!origin) return callback(null, true);
-      if (devOrigins.includes(origin)) return callback(null, true);
-      // default deny
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-  }));
-} else {
-  // production - keep default (restrict or set CLIENT_ORIGIN env)
-  app.use(cors({
-    origin: process.env.CLIENT_ORIGIN || false,
-    credentials: true,
-  }));
-}
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -49,13 +29,17 @@ app.get('/api/health', (req, res) => {
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const assessmentRoutes = require('./routes/assessmentRoutes');
+const activityRoutes = require('./routes/activityRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const storyRoutes = require('./routes/storyRoutes');
+const replyRoutes = require('./routes/replyRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/assessments', assessmentRoutes);
-app.use('/api/exercises', exerciseRoutes);
-// app.use('/api/stories', storyRoutes);
+app.use('/api/activity', activityRoutes);
+// app.use('/api/exercises', exerciseRoutes);
+app.use('/api/stories', storyRoutes);
+app.use('/api/replies', replyRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
