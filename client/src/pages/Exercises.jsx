@@ -199,7 +199,7 @@ const ExerciseLibrary = () => {
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition ${
+                  className={`border border-gray-50 flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition ${
                     isActive
                       ? `${colorClasses[cat.color]} font-semibold`
                       : 'bg-white text-gray-600 border border-gray-200 hover:shadow-sm'
@@ -291,7 +291,7 @@ const ExerciseLibrary = () => {
                         <button
                           onClick={() => startExercise(exercise)}
                           disabled={startingId === exercise.id}
-                          className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 ${colorClasses[color]}  rounded-lg text-sm font-medium shadow-sm hover:opacity-95`}
+                          className={`border-0 flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 ${colorClasses[color]}  rounded-lg text-sm font-medium shadow-sm hover:opacity-95`}
                         >
                           {startingId === exercise.id ? 'Memulai...' : 'Mulai Latihan'}
                           <ChevronRight className="w-4 h-4" />
@@ -358,7 +358,6 @@ const ExerciseLibrary = () => {
                                     ) : (
                                       <span className="text-orange-600">Dimulai • {prog.createdAt ? new Date(prog.createdAt).toLocaleString() : ''}</span>
                                     )}
-                                    {/* <div>Streak: {prog.streak ?? 0}</div> */}
                                     {prog.notes && <div className="mt-1">Catatan: <span className="text-gray-700">{prog.notes}</span></div>}
                                   </div>
                                 )}
@@ -366,25 +365,22 @@ const ExerciseLibrary = () => {
                             </div>
                           </div>
 
-                          <div className="flex flex-col items-end gap-2">
-                            <div className="text-xs text-gray-500">{/* duration placeholder */}</div>
-
-                            <div className="flex flex-col gap-2 w-40">
-                              <button
-                                onClick={() => startModule(selectedExercise, idx)}
-                                className="inline-flex items-center justify-center gap-2 px-3 py-2 bg-purple-600 text-white rounded-lg text-sm"
-                              >
-                                Mulai Modul
-                              </button>
-
-                              <button
-                                onClick={() => completeModule(selectedExercise, idx)}
-                                disabled={prog?.completed}
-                                className={`inline-flex items-center justify-center gap-2 px-3 py-2 ${prog?.completed ? 'bg-gray-300 text-gray-600' : 'bg-green-600 text-white'} rounded-lg text-sm`}
-                              >
-                                {prog?.completed ? 'Selesai' : 'Tandai Selesai'}
-                              </button>
-                            </div>
+                          <div className="flex items-center justify-end w-40">
+                            {prog ? (
+                              prog.completed ? (
+                                <span className="inline-flex items-center gap-2 text-sm text-green-600">
+                                  <span className="w-2 h-2 bg-green-600 rounded-full" />Selesai
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-2 text-sm text-orange-600">
+                                  <span className="w-2 h-2 bg-orange-500 rounded-full" />Dimulai
+                                </span>
+                              )
+                            ) : (
+                              <span className="inline-flex items-center gap-2 text-sm text-gray-400">
+                                <span className="w-2 h-2 bg-gray-300 rounded-full" />Belum
+                              </span>
+                            )}
                           </div>
                         </div>
                       );
@@ -396,7 +392,7 @@ const ExerciseLibrary = () => {
 
               <div className="p-6 border-t">
                 <button
-                  onClick={() => startExercise(selectedExercise)}
+                  onClick={() => navigate(`/latihan/${selectedExercise.id}?module=0`)}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary-500 text-white rounded-lg font-semibold shadow"
                 >
                   Mulai Sekarang

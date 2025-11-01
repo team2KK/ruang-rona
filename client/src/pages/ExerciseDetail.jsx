@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Clock, ChevronRight, X } from 'lucide-react';
 import { exerciseAPI } from '../api/axios.js';
 import useAuthStore from '../store/authStore';
+import { Button } from 'primereact/button';
 
 export default function ExerciseDetail() {
   const { id } = useParams();
@@ -119,8 +120,8 @@ export default function ExerciseDetail() {
                 <h2 className="text-lg font-semibold text-gray-900">Modul</h2>
                 <div className="text-xs text-gray-500">{modules.length} modul</div>
               </div>
-              <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-gray-700">
-                <X className="w-5 h-5" />
+              <button text onClick={() => navigate(-1)} className={'size-6 rounded-md text-center bg-purple-400 border-0'}>
+                <X className="size-3 text-gray-900 text-center" />
               </button>
             </div>
 
@@ -133,7 +134,7 @@ export default function ExerciseDetail() {
                   <button
                     key={idx}
                     onClick={() => openModule(idx)}
-                    className={`w-full text-left flex items-center gap-3 p-3 rounded-lg transition ${
+                    className={`w-full border-0 text-left flex items-center gap-3 p-3 rounded-lg transition ${
                       isActive ? 'bg-purple-50 ring-1 ring-purple-200' : 'hover:bg-gray-50'
                     }`}
                   >
@@ -170,7 +171,7 @@ export default function ExerciseDetail() {
                 </div>
                 <div className="text-right text-sm text-gray-600">
                   <div>{modules.length} modul</div>
-                  <div className="mt-2 text-xs">Poin: <span className="font-medium text-gray-900">{exercise.points}</span></div>
+                  {/* <div className="mt-2 text-xs">Poin: <span className="font-medium text-gray-900">{exercise.points}</span></div> */}
                 </div>
               </div>
 
@@ -181,9 +182,9 @@ export default function ExerciseDetail() {
                       <div className="bg-purple-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">{selectedIdx + 1}</div>
                       <div>
                         <div className="text-lg font-semibold text-gray-900">{typeof selectedModule === 'string' ? selectedModule : selectedModule?.title}</div>
-                        {typeof selectedModule !== 'string' && selectedModule?.content && (
+                        {/* {typeof selectedModule !== 'string' && selectedModule?.content && (
                           <div className="text-sm text-gray-700 mt-1">{selectedModule.content}</div>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
@@ -201,10 +202,11 @@ export default function ExerciseDetail() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => handleStartModule(selectedIdx)}
-                      disabled={savingModule === selectedKey || (!!selectedProg && !selectedProg?.completed)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-medium"
+                      // disable Start after module has been started (progress exists) or while saving
+                      disabled={savingModule === selectedKey || !!selectedProg}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg font-medium disabled:opacity-60"
                     >
-                      {savingModule === selectedKey ? 'Memproses...' : (selectedProg ? (selectedProg.completed ? 'Dimulai' : 'Lanjutkan') : 'Mulai Modul')}
+                      {savingModule === selectedKey ? 'Memproses...' : (selectedProg ? (selectedProg.completed ? 'Dimulai' : 'Dimulai') : 'Mulai Modul')}
                       <ChevronRight className="w-4 h-4" />
                     </button>
 
@@ -215,6 +217,16 @@ export default function ExerciseDetail() {
                     >
                       {selectedProg?.completed ? 'Sudah Selesai' : 'Tandai Selesai'}
                     </button>
+
+                    { ( (selectedProg || savingModule === selectedKey) && (selectedIdx < modules.length - 1) ) && (
+                      <button
+                        onClick={() => openModule(selectedIdx + 1)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium"
+                      >
+                        Berikutnya
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
 
                   <div className="mt-6 text-sm text-gray-600">
