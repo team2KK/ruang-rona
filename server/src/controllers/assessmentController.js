@@ -1,6 +1,14 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const CATEGORY_MAP = {
+  school: 'school-',
+  friends: 'friends-',
+  self: 'self-',
+  online: 'online-',
+  mind: 'mind-',
+};
+
 exports.getQuestions = async (req, res) => {
   try {
     const questions = await prisma.assessmentQuestion.findMany({
@@ -38,105 +46,90 @@ exports.submitAssessment = async (req, res) => {
     const { answers = [] } = req.body;
 
     if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: 'User tidak ditemukan'
-      });
+      return res.status(401).json({ success: false, message: 'User tidak ditemukan' });
     }
 
-    if (!answers || !Array.isArray(answers) || answers.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'Jawaban tidak boleh kosong'
-      });
+    if (!Array.isArray(answers) || !answers.length) {
+      return res.status(400).json({ success: false, message: 'Jawaban tidak boleh kosong' });
     }
 
+    // 1) kita ambil dulu pertanyaan2 nya biar tau mana yg order = 1
+    const questions = await prisma.assessmentQuestion.findMany({
+      select: { id: true, order: true },
+    });
+
+    const order1 = questions.find((q) => q.order === 1);
+    // fallback kalo gak ketemu
+    const order1QuestionId = order1 ? order1.id : null;
+
+    // 2) buat session
     const session = await prisma.assessmentSession.create({
       data: {
-        userId: String(userId) 
-      }
+        userId: String(userId),
+      },
     });
 
-    const answerData = answers.map((a) => ({
-      sessionId: session.id,
-      questionId: a.questionId,
-      answer: a.answer
-    }));
-
-    await prisma.assessmentAnswer.createMany({
-      data: answerData
-    });
-
-    const counts = {}; // { akademik: 3, sosial: 1, ... }
-
+    // 3) simpan semua jawaban
     for (const a of answers) {
-      let val = a.answer;
-      if (Array.isArray(val)) {
-        val = val[0];
-      }
-      if (!val) continue;
-
-      const key = String(val).toLowerCase();
-
-      counts[key] = (counts[key] || 0) + 1;
+      await prisma.assessmentAnswer.create({
+        data: {
+          sessionId: session.id,
+          questionId: a.questionId,
+          answer: a.answer,
+        },
+      });
     }
 
+    // 4) tentukan mainArea dari JAWABAN yang pertanyaannya order = 1
     let mainArea = null;
-    if (Object.keys(counts).length > 0) {
-      const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-      mainArea = sorted[0][0];
-    }
+    let recommendation = null;
 
-    if (!mainArea) {
-      const first = answers.find((a) => a.questionId === 1);
-      if (first) {
-        mainArea = Array.isArray(first.answer) ? first.answer[0] : first.answer;
-        if (mainArea) {
-          mainArea = String(mainArea).toLowerCase();
+    if (order1QuestionId) {
+      const firstAnswer = answers.find(
+        (a) => Number(a.questionId) === Number(order1QuestionId)
+      );
+
+      if (firstAnswer) {
+        const picked = String(
+          Array.isArray(firstAnswer.answer) ? firstAnswer.answer[0] : firstAnswer.answer
+        ).toLowerCase();
+
+        const prefix = CATEGORY_MAP[picked];
+
+        if (prefix) {
+          // ambil exercise pertama di kategori itu
+          recommendation = await prisma.exerciseRecommendation.findFirst({
+            where: {
+              code: {
+                startsWith: prefix,
+              },
+            },
+          });
+          mainArea = picked;
+        } else {
+          // kalo user jawabnya bukan salah satu kategori kita
+          mainArea = picked;
         }
       }
     }
 
+    // 5) update session
     if (mainArea) {
       await prisma.assessmentSession.update({
         where: { id: session.id },
-        data: { mainArea }
+        data: { mainArea },
       });
     }
-
-    let recommendation = null;
-    if (mainArea) {
-      recommendation = await prisma.exerciseRecommendation.findFirst({
-        where: { code: mainArea }
-      });
-    }
-
-    const rec = await prisma.exerciseRecommendation.findFirst({
-      where: { code: mainArea }
-    });
-
-    await prisma.exerciseProgress.create({
-      data: {
-        userId,
-        exerciseType: 'default',
-        exerciseTitle: rec ? rec.title : 'Latihan dari sistem',
-        exerciseRecommendationId: rec ? rec.id : null,
-      }
-    });
-
 
     return res.json({
       success: true,
       sessionId: session.id,
       mainArea,
-      recommendation
+      recommendation,
     });
   } catch (err) {
     console.error('submitAssessment error:', err);
-    return res.status(500).json({
-      success: false,
-      message: 'Gagal menyimpan assessment'
-    });
+    return res.status(500).json({ success: false, message: 'Gagal menyimpan assessment' });
   }
 };
 
